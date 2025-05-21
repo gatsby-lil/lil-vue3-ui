@@ -8,10 +8,11 @@ import { withTaskName, run } from "./utils";
 // 4. 生成一个组件库
 // 5. 发布
 export default series(
-  withTaskName("clear", () => {
+  withTaskName("clear", async () => {
+    console.log("------------------------");
     run("rm -rf ./dist");
   }),
-  withTaskName("buildPackages", () => {
-    run("pnpm run --filter ./packages --parallel build");
+  withTaskName("buildPackages", async () => {
+    run("pnpm run --filter ./packages/utils --parallel build");
   })
 );

@@ -9,7 +9,7 @@ export const run = (command: string) => {
     const [cmd, ...args] = command.split(" ");
     // 添加一个子进程
     const app = spawn(cmd, args, {
-      cwd: projectRootPath(),
+      cwd: projectRootPath,
       stdio: "inherit",
       shell: true,
     });

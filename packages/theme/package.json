@@ -6,6 +6,7 @@
   "scripts": {
     "build": "gulp"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",

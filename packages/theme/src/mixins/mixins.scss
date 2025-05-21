@@ -1,0 +1,6 @@
+// 声明公共的scss方法
+@use "config" as *;
+@forward "config";
+div {
+  color: red;
+}
