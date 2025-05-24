@@ -27,6 +27,5 @@
     "node_modules",
     "**/__tests__",
     "dist/**"
-  ],
-  "include": ["gulpfile.ts"]
+  ]
 }

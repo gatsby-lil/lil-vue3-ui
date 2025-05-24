@@ -1,5 +1,7 @@
-import { series, parallel } from "gulp";
+import { series } from "gulp";
 import { withTaskName, run } from "./utils";
+export * from "./fullComponent";
+export * from "./buildComponent";
 
 // 1. 打包样式
 // * 打包工具
@@ -9,10 +11,15 @@ import { withTaskName, run } from "./utils";
 // 5. 发布
 export default series(
   withTaskName("clear", async () => {
-    console.log("------------------------");
     run("rm -rf ./dist");
   }),
   withTaskName("buildPackages", async () => {
-    run("pnpm run --filter ./packages/utils --parallel build");
+    run("pnpm run --filter ./packages/** --parallel build");
+  }),
+  withTaskName("buildFullComponent", async () => {
+    run("pnpm run build buildFullComponent");
+  }),
+  withTaskName("buildComponent", async () => {
+    run("pnpm run build buildComponent");
   })
 );

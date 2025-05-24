@@ -16,3 +16,10 @@ export const run = (command: string) => {
     app.on("close", resolve);
   });
 };
+
+export const pathReWriter = (format: string) => {
+  return (id: string) => {
+    id = id.replaceAll("@lil-ui", `lil-ui/${format}`);
+    return id;
+  };
+};
