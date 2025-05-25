@@ -1,12 +1,15 @@
 import path from "path";
+import fs from "fs/promises";
 import { series } from "gulp";
 import { OutputOptions, rollup } from "rollup";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import vue from "rollup-plugin-vue";
 import typescript from "rollup-plugin-typescript2";
-import { sync } from "fast-glob";
-import { compRoot } from "./utils/path";
+import { glob, sync } from "fast-glob";
+import { Project, SourceFile } from "ts-morph";
+import * as VueCompiler from "@vue/compiler-sfc";
+import { compRoot, outDir, projectRootPath } from "./utils/path";
 import { buildConfig } from "./utils/config";
 import { pathReWriter } from "./utils";
 
@@ -38,4 +41,70 @@ const buildEachComponent = async () => {
   });
   return Promise.all(builds);
 };
-export const buildComponent = series(buildEachComponent);
+
+async function getTypes() {
+  const project = new Project({
+    // 生成.d.ts  需要配置选项
+    compilerOptions: {
+      allowJs: true,
+      declaration: true,
+      emitDeclarationOnly: true,
+      noEmitOnError: true,
+      outDir: path.resolve(outDir, "types"),
+      baseUrl: projectRootPath,
+      paths: {
+        "@lil-ui/*": ["packages/*"],
+      },
+      include: ["packages/**/*.ts"], // 包含目标文件
+      skipLibCheck: true,
+      strict: false,
+      noEmit: false,
+    },
+    tsConfigFilePath: path.resolve(projectRootPath, "tsconfig.json"),
+    skipAddingFilesFromTsConfig: true,
+  });
+  const filePath = await glob("**/*", {
+    cwd: compRoot,
+    onlyFiles: true,
+    absolute: true, // 绝对路径
+  });
+  const sourceFiles: SourceFile[] = [];
+  await Promise.all(
+    filePath.map(async (file: string) => {
+      if (file.endsWith(".vue")) {
+        const content = await fs.readFile(file, "utf-8");
+        const sfc = VueCompiler.parse(content);
+        const { script } = sfc.descriptor;
+        if (script) {
+          const sourceFileVue = project.createSourceFile(
+            file + ".ts",
+            script.content
+          );
+          sourceFiles.push(sourceFileVue);
+        }
+      } else if (file.endsWith(".ts")) {
+        // 把所有ts文件放在一起, 发射成.d.ts文件
+        const sourceFile = project.addSourceFileAtPath(file);
+        sourceFiles.push(sourceFile);
+      }
+    })
+  );
+
+  await project.emit({
+    emitOnlyDtsFiles: true,
+  });
+
+  const tasks = sourceFiles.map(async (sourceFile: SourceFile) => {
+    const emitOutput = sourceFile.getEmitOutput();
+    const tasks = emitOutput.getOutputFiles().map(async (outputFile: any) => {
+      const filePath = outputFile.getFilePath();
+      await fs.mkdir(path.dirname(filePath), {
+        recursive: true,
+      });
+      await fs.writeFile(filePath, pathReWriter("es")(outputFile.getText()));
+    });
+    await Promise.all(tasks);
+  });
+  await Promise.all(tasks);
+}
+export const buildComponent = series(buildEachComponent, getTypes);
