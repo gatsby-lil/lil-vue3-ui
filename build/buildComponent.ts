@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs/promises";
-import { series } from "gulp";
+import { parallel, series } from "gulp";
 import { OutputOptions, rollup } from "rollup";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
@@ -11,7 +11,7 @@ import { Project, SourceFile } from "ts-morph";
 import * as VueCompiler from "@vue/compiler-sfc";
 import { compRoot, outDir, projectRootPath } from "./utils/path";
 import { buildConfig } from "./utils/config";
-import { pathReWriter } from "./utils";
+import { pathReWriter, run } from "./utils";
 
 // 打包每个组件 --> dist/cpmponents
 const buildEachComponent = async () => {
@@ -107,4 +107,40 @@ async function getTypes() {
   });
   await Promise.all(tasks);
 }
-export const buildComponent = series(buildEachComponent, getTypes);
+
+function copyTypes() {
+  const src = path.resolve(outDir, "types/components");
+  const copy = (moduleName: string) => {
+    const output = path.resolve(outDir, moduleName, "components");
+    return () => run(`cp -r ${src}/* ${output}`);
+  };
+  return parallel(copy("es"), copy("lib"));
+}
+
+async function buildComponentEntry() {
+  const config = {
+    input: path.resolve(compRoot, "index.ts"),
+    plugins: [typescript()],
+    external: () => true,
+  };
+  const bundle = await rollup(config);
+  return Promise.all(
+    Object.values(buildConfig)
+      .map((config) => {
+        return {
+          format: config.format,
+          file: path.resolve(config.output.path, "components/index.js"),
+        };
+      })
+      .map((config) => {
+        return bundle.write(config as OutputOptions);
+      })
+  );
+}
+
+export const buildComponent = series(
+  buildEachComponent,
+  getTypes,
+  copyTypes(),
+  buildComponentEntry
+);

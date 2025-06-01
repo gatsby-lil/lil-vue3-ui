@@ -13,12 +13,12 @@ export default series(
   withTaskName("clear", async () => {
     run("rm -rf ./dist");
   }),
-  // withTaskName("buildPackages", async () => {
-  //   run("pnpm run --filter ./packages/** --parallel build");
-  // }),
-  // withTaskName("buildFullComponent", async () => {
-  //   run("pnpm run build buildFullComponent");
-  // }),
+  withTaskName("buildPackages", async () => {
+    run("pnpm run --filter ./packages/** --parallel build");
+  }),
+  withTaskName("buildFullComponent", async () => {
+    run("pnpm run build buildFullComponent");
+  }),
   withTaskName("buildComponent", async () => {
     run("pnpm run build buildComponent");
   })
