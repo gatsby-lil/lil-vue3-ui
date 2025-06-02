@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm -C play dev",
-    "build": "gulp -f build/gulpfile.ts"
+    "build": "gulp -f build/gulpfile.ts",
+    "doc:dev": "pnpm -C docs dev"
   },
   "keywords": [],
   "author": "",
