@@ -2,6 +2,7 @@ import { series } from "gulp";
 import { withTaskName, run } from "./utils";
 export * from "./fullComponent";
 export * from "./buildComponent";
+export * from "./genTypes";
 
 // 1. 打包样式
 // * 打包工具
@@ -21,5 +22,8 @@ export default series(
   }),
   withTaskName("buildComponent", async () => {
     run("pnpm run build buildComponent");
+  }),
+  withTaskName("buildEntryTypes", async () => {
+    run("pnpm run build genEntryTypes");
   })
 );
