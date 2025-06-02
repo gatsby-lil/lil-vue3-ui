@@ -3,6 +3,7 @@ import { withTaskName, run } from "./utils";
 export * from "./fullComponent";
 export * from "./buildComponent";
 export * from "./genTypes";
+export * from "./copyPackagejson";
 
 // 1. 打包样式
 // * 打包工具
@@ -25,5 +26,8 @@ export default series(
   }),
   withTaskName("buildEntryTypes", async () => {
     run("pnpm run build genEntryTypes");
+  }),
+  withTaskName("copyPackageJson", async () => {
+    run("pnpm run build copyPackageJson");
   })
 );
