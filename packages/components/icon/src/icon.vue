@@ -1,30 +1,24 @@
 <template>
-  <i class="lil-icon" :style="style">
+  <i :class="bem.b()" :style="style">
     <slot></slot>
   </i>
 </template>
 
-<script lang="ts">
-defineComponent;
-import { computed, defineComponent } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import { iconProps } from "./icon";
-export default defineComponent({
+import { createNamespace } from "@lil-ui/utils/createClassName";
+defineOptions({
   name: "LilIcon",
-  props: iconProps,
-  setup(props) {
-    const style = computed(() => {
-      if (!props.size && !props.color) {
-        return {};
-      }
-      return {
-        ...(props.color ? { color: props.color } : {}),
-        ...(props.size ? { "font-size": props.size } : {}),
-      };
-    });
-    return {
-      style,
-    };
-  },
+});
+const props = defineProps(iconProps);
+const bem = createNamespace("icon");
+const style = computed(() => {
+  if (!props.size && !props.color) return {};
+  return {
+    ...(props.size ? { "font-size": props.size + "px" } : {}),
+    ...(props.color ? { color: props.color } : {}),
+  };
 });
 </script>
 

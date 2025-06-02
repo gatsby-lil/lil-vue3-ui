@@ -1,9 +1,9 @@
-import { series } from "gulp";
-import { withTaskName, run } from "./utils";
-export * from "./fullComponent";
-export * from "./buildComponent";
-export * from "./genTypes";
-export * from "./copyPackagejson";
+import { series } from 'gulp'
+import { withTaskName, run } from './utils'
+export * from './fullComponent'
+export * from './buildComponent'
+export * from './genTypes'
+export * from './copyPackagejson'
 
 // 1. 打包样式
 // * 打包工具
@@ -12,22 +12,22 @@ export * from "./copyPackagejson";
 // 4. 生成一个组件库
 // 5. 发布
 export default series(
-  withTaskName("clear", async () => {
-    run("rm -rf ./dist");
+  withTaskName('clear', async () => {
+    run('rm -rf ./dist')
   }),
-  withTaskName("buildPackages", async () => {
-    run("pnpm run --filter ./packages/** --parallel build");
+  withTaskName('buildPackages', async () => {
+    run('pnpm run --filter ./packages/** --parallel build')
   }),
-  withTaskName("buildFullComponent", async () => {
-    run("pnpm run build buildFullComponent");
+  withTaskName('buildFullComponent', async () => {
+    run('pnpm run build buildFullComponent')
   }),
-  withTaskName("buildComponent", async () => {
-    run("pnpm run build buildComponent");
+  withTaskName('buildComponent', async () => {
+    run('pnpm run build buildComponent')
   }),
-  withTaskName("buildEntryTypes", async () => {
-    run("pnpm run build genEntryTypes");
+  withTaskName('buildEntryTypes', async () => {
+    run('pnpm run build genEntryTypes')
   }),
-  withTaskName("copyPackageJson", async () => {
-    run("pnpm run build copyPackageJson");
+  withTaskName('copyPackageJson', async () => {
+    run('pnpm run build copyPackageJson')
   })
-);
+)

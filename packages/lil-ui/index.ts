@@ -1,16 +1,16 @@
-import type { App } from "vue";
-import { LilIcon } from "@lil-ui/components";
+import type { App } from 'vue'
+import { LilIcon } from '@lil-ui/components'
 
-const components = [LilIcon];
+const components = [LilIcon]
 
 const install = (app: App) => {
-  components.forEach((component) => {
-    app.use(component);
-  });
-};
+  components.forEach(component => {
+    app.use(component)
+  })
+}
 
 export default {
-  install,
-};
+  install
+}
 
-export * from "@lil-ui/components";
+export * from '@lil-ui/components'
