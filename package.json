@@ -22,6 +22,7 @@
     "@types/gulp-clean-css": "^4.3.4",
     "@types/gulp-sass": "^5.0.4",
     "@types/sass": "^1.45.0",
+    "@vitejs/plugin-vue-jsx": "^4.2.0",
     "@vue/compiler-sfc": "^3.5.14",
     "eslint": "^9.28.0",
     "eslint-plugin-vue": "^10.1.0",

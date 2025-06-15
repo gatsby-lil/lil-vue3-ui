@@ -1,6 +1,34 @@
-// 声明公共的scss方法
-@use "config" as *;
-@forward "config";
-div {
-  color: red;
+@use './config.scss' as *;
+@forward './config.scss';
+
+// .lil-button{}
+@mixin b($block) {
+  $B: $namespace + '-' + $block;
+  .#{$B} {
+    @content;
+  }
+}
+// .lil-button.is-desiabled
+@mixin when($state) {
+  @at-root {
+    &.#{$state-prefix + $state} {
+      @content;
+    }
+  }
+}
+// &--primary => .lil-button--primary
+@mixin m($modifier) {
+  @at-root {
+    #{& + $modifier-separator + $modifier} {
+      @content;
+    }
+  }
+}
+// &__header  => .lil-button__header
+@mixin e($element) {
+  @at-root {
+    #{& + $element-separator + $element} {
+      @content;
+    }
+  }
 }
