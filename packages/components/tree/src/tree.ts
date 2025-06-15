@@ -16,11 +16,28 @@ export interface TreeNode extends Required<TreeOption> {
   isLeaf: boolean
 }
 
-export const treeNodePorps = {}
+export const treeNodePorps = {
+  node: {
+    type: Object as PropType<TreeNode>,
+    require: true
+  },
+  expanded: {
+    type: Boolean,
+    require: true
+  }
+} as const
+
+export const treeNodeEmitts = {
+  toggle: (node: TreeNode) => node
+}
 
 export const treeProps = {
   data: {
     type: Array as PropType<TreeOption[]>,
+    default: () => []
+  },
+  defaultExpandedKeys: {
+    type: Array as PropType<TreeKey[]>,
     default: () => []
   },
   labelField: {

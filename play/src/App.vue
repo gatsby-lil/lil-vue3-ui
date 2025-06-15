@@ -23,13 +23,13 @@ function createData(level = 4, parentKey = ''): any {
   })
 }
 const treeData = ref(createData())
-console.log(treeData, 'data')
 </script>
 
 <template>
   <div style="display: flex; justify-content: space-between">
     <lil-tree
       :data="treeData"
+      :default-expanded-keys="['40', '4032']"
       label-field="customLabel"
       key-field="customKey"
       children-field="customChildren"
