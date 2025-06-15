@@ -9,7 +9,7 @@ import { computed } from 'vue'
 import { iconProps } from './icon'
 import { createNamespace } from '@lil-ui/utils/createClassName'
 defineOptions({
-  name: 'LilIcon'
+  name: 'lil-icon'
 })
 const props = defineProps(iconProps)
 const bem = createNamespace('icon')
