@@ -4,7 +4,9 @@
       <tree-node
         :node="node"
         :expanded="isExpanded(node)"
+        :selected="isSelected(node)"
         @toggle="toggleExpand"
+        @select="handleSelect"
       />
     </template>
   </div>
@@ -14,16 +16,26 @@
 import { computed, ref, watch } from 'vue'
 import { createNamespace } from '@lil-ui/utils/createClassName'
 import TreeNode from './treeNode.vue'
-import { TreeNode as TreeNodeType, TreeOption, treeProps } from './tree'
+import {
+  TreeNode as TreeNodeType,
+  TreeOption,
+  treeProps,
+  TypeTreeKey,
+  treeEmits
+} from './tree'
 
 const bem = createNamespace('tree')
+
 defineOptions({
   name: 'lil-tree'
 })
+
 const props = defineProps(treeProps)
+const emits = defineEmits(treeEmits)
 
 const tree = ref<TreeNodeType[]>([])
 const expandedKeysSet = ref(new Set(props.defaultExpandedKeys))
+const selectedKeys = ref<TypeTreeKey>([])
 
 function createOptions(key: string, label: string, children: string) {
   return {
@@ -126,11 +138,51 @@ function toggleExpand(node: TreeNodeType) {
   }
 }
 
+// 实现选中逻辑
+function isSelected(node: TreeNodeType): boolean {
+  return selectedKeys.value.includes(node.key)
+}
+
+function handleSelect(node: TreeNode) {
+  if (!props.selectable) {
+    return
+  }
+  const keys = [...selectedKeys.value]
+  if (props.multiple) {
+    const index = keys.findIndex(key => key === node.key)
+    if (index > -1) {
+      // 删除
+      keys.splice(index, 1)
+    } else {
+      // 新增
+      keys.push(node.key)
+    }
+  } else {
+    if (keys.includes(node.key)) {
+      keys = []
+    } else {
+      keys = [node.key]
+    }
+  }
+  selectedKeys.value = keys
+  emits('update:selectedKeys', keys)
+}
+
 watch(
   props.data,
   (data: TreeOption[]) => {
     const newTreeData = createTree(data)
     tree.value = newTreeData
+  },
+  { immediate: true }
+)
+
+watch(
+  props.selectedKeys,
+  keys => {
+    if (Array.isArray(keys)) {
+      selectedKeys.value = keys
+    }
   },
   { immediate: true }
 )

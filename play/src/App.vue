@@ -30,6 +30,7 @@ const treeData = ref(createData())
     <lil-tree
       :data="treeData"
       :default-expanded-keys="['40', '4032']"
+      selectable
       label-field="customLabel"
       key-field="customKey"
       children-field="customChildren"

@@ -1,9 +1,9 @@
 import { ExtractPropTypes, PropType } from 'vue'
 
-export type TreeKey = number | string
+export type TypeTreeKey = number | string
 export interface TreeOption {
-  label?: TreeKey
-  key?: TreeKey
+  label?: TypeTreeKey
+  key?: TypeTreeKey
   children: TreeOption[]
   isLeaf?: boolean
   disabled?: boolean
@@ -24,12 +24,18 @@ export const treeNodePorps = {
   expanded: {
     type: Boolean,
     require: true
+  },
+  selected: {
+    type: Boolean,
   }
 } as const
 
 export const treeNodeEmitts = {
-  toggle: (node: TreeNode) => node
+  toggle: (node: TreeNode) => node,
+  select: (node: TreeNode) => node
 }
+
+
 
 export const treeProps = {
   data: {
@@ -37,7 +43,11 @@ export const treeProps = {
     default: () => []
   },
   defaultExpandedKeys: {
-    type: Array as PropType<TreeKey[]>,
+    type: Array as PropType<TypeTreeKey[]>,
+    default: () => []
+  },
+  selectedKeys: {
+    type: Array as PropType<TypeTreeKey[]>,
     default: () => []
   },
   labelField: {
@@ -51,7 +61,19 @@ export const treeProps = {
   childrenField: {
     type: String,
     default: 'children'
+  },
+  selectable: {
+    type: Boolean,
+    default: true
+  },
+  multiple: {
+    type: Boolean,
+    default: true
   }
 } as const
+
+export const treeEmits = {
+  'update:selectedKeys': (keys: TypeTreeKey[]) => keys
+}
 
 export type TreeProps = Partial<ExtractPropTypes<typeof treeProps>>
