@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { AddCircle } from '@vicons/ionicons5'
 
 function createLabel(level: number): string {
@@ -22,7 +22,41 @@ function createData(level = 4, parentKey = ''): any {
     }
   })
 }
+
+function nextLabel(currentLabel?: string | number): string {
+  if (!currentLabel) return 'Out of Tao, One is born'
+  if (currentLabel === 'Out of Tao, One is born') return 'Out of One, Two'
+  if (currentLabel === 'Out of One, Two') return 'Out of Two, Three'
+  if (currentLabel === 'Out of Two, Three') {
+    return 'Out of Three, the created universe'
+  }
+  if (currentLabel === 'Out of Three, the created universe') {
+    return 'Out of Tao, One is born'
+  }
+  return ''
+}
+
+const handleLoad = (node: TreeOption) => {
+  // 每次实现懒加载时，会触发此方法，将当前点击的node传入
+  return new Promise<TreeOption[]>((resolve, reject) => {
+    setTimeout(() => {
+      resolve([
+        {
+          label: nextLabel(node.label),
+          key: node.key + nextLabel(node.label),
+          isLeaf: false
+        }
+      ])
+    }, 2000)
+  })
+}
+
 const treeData = ref(createData())
+const selectedKeys = ref([])
+
+watch(selectedKeys, keys => {
+  console.log(keys, 'kkkkkk')
+})
 </script>
 
 <template>
@@ -30,6 +64,8 @@ const treeData = ref(createData())
     <lil-tree
       :data="treeData"
       :default-expanded-keys="['40', '4032']"
+      :onLoad="handleLoad"
+      v-model:selected-keys="selectedKeys"
       selectable
       label-field="customLabel"
       key-field="customKey"

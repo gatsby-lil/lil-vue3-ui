@@ -50,6 +50,7 @@ export const treeProps = {
     type: Array as PropType<TypeTreeKey[]>,
     default: () => []
   },
+  onLoad: Function as PropType<(node: TreeOption) => Promise<TreeOption[]>>,
   labelField: {
     type: String,
     default: 'label'

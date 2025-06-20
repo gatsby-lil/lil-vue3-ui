@@ -36,6 +36,7 @@ const emits = defineEmits(treeEmits)
 const tree = ref<TreeNodeType[]>([])
 const expandedKeysSet = ref(new Set(props.defaultExpandedKeys))
 const selectedKeys = ref<TypeTreeKey>([])
+const loadingKeyRef = ref(new Set<TypeTreeKey>())
 
 function createOptions(key: string, label: string, children: string) {
   return {
