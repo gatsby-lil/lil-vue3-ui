@@ -1,4 +1,4 @@
-import { ExtractPropTypes, PropType } from 'vue'
+import { ExtractPropTypes, InjectionKey, PropType, SetupContext } from 'vue'
 
 export type TypeTreeKey = number | string
 
@@ -81,3 +81,22 @@ export const treeEmits = {
 }
 
 export type TreeProps = Partial<ExtractPropTypes<typeof treeProps>>
+
+export interface TreeContext {
+  slots: SetupContext['slots']
+}
+
+export const treeInjectionKey: InjectionKey<TreeContext> =
+  Symbol('treeInjectionKey')
+
+// jsx组件的props类型
+export const treeNodeContentProps = {
+  node: {
+    type: Object as PropType<TreeNode>,
+    required: true
+  }
+} as const
+
+export type TreeNodeContentProps = Partial<
+  ExtractPropTypes<typeof treeNodeContentProps>
+>

@@ -14,7 +14,7 @@
         </lil-icon>
       </span>
       <span :class="[bem.e('label')]" @click="handleContentClick">
-        {{ node?.label }}
+        <TreeNodeContent :node="node!" />
       </span>
     </div>
   </div>
@@ -23,6 +23,7 @@
 <script lang="ts" setup>
 import { createNamespace } from '@lil-ui/utils/createClassName'
 import LilIcon from '@lil-ui/components/icon'
+import TreeNodeContent from './tree-node-content'
 import Switcher from './icons/Switcher'
 import Loading from './icons/Loading'
 import { treeNodeEmitts, treeNodePorps } from './tree'

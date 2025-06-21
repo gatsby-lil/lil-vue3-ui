@@ -88,7 +88,14 @@ watch(selectedKeys, keys => {
       :onLoad="handleLoad"
       v-model:selected-keys="selectedKeys"
       selectable
-    />
+    >
+      <!-- 测试插槽 -->
+      <template #default="{ node }">
+        <span style="color: darkgoldenrod"
+          >{{ node.label }} - 哈哈哈 - 777</span
+        >
+      </template>
+    </lil-tree>
     <lil-icon :size="36" color="red">
       <AddCircle />
     </lil-icon>

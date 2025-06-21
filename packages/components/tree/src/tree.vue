@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, provide, ref, useSlots, watch } from 'vue'
 import { createNamespace } from '@lil-ui/utils/createClassName'
 import TreeNode from './treeNode.vue'
 import {
@@ -22,7 +22,8 @@ import {
   TreeOption,
   treeProps,
   TypeTreeKey,
-  treeEmits
+  treeEmits,
+  treeInjectionKey
 } from './tree'
 
 const bem = createNamespace('tree')
@@ -38,6 +39,10 @@ const tree = ref<TreeNodeType[]>([])
 const expandedKeysSet = ref(new Set(props.defaultExpandedKeys))
 const selectedKeys = ref<TypeTreeKey[]>([])
 const loadingKeysRef = ref(new Set<TypeTreeKey>())
+
+provide(treeInjectionKey, {
+  slots: useSlots()
+})
 
 function createOptions(key: string, label: string, children: string) {
   return {
