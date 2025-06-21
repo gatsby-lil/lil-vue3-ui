@@ -5,6 +5,7 @@
         :node="node"
         :expanded="isExpanded(node)"
         :selected="isSelected(node)"
+        :loading-keys="loadingKeysRef"
         @toggle="toggleExpand"
         @select="handleSelect"
       />
@@ -35,8 +36,8 @@ const emits = defineEmits(treeEmits)
 
 const tree = ref<TreeNodeType[]>([])
 const expandedKeysSet = ref(new Set(props.defaultExpandedKeys))
-const selectedKeys = ref<TypeTreeKey>([])
-const loadingKeyRef = ref(new Set<TypeTreeKey>())
+const selectedKeys = ref<TypeTreeKey[]>([])
+const loadingKeysRef = ref(new Set<TypeTreeKey>())
 
 function createOptions(key: string, label: string, children: string) {
   return {
@@ -123,7 +124,8 @@ function isExpanded(node: TreeNodeType): boolean {
 }
 
 function expand(node: TreeNodeType) {
-  return expandedKeysSet.value.add(node.key)
+  expandedKeysSet.value.add(node.key)
+  return triggerLoad(node)
 }
 
 function collpase(node: TreeNodeType) {
@@ -144,11 +146,11 @@ function isSelected(node: TreeNodeType): boolean {
   return selectedKeys.value.includes(node.key)
 }
 
-function handleSelect(node: TreeNode) {
+function handleSelect(node: TreeNodeType) {
   if (!props.selectable) {
     return
   }
-  const keys = [...selectedKeys.value]
+  let keys = [...selectedKeys.value]
   if (props.multiple) {
     const index = keys.findIndex(key => key === node.key)
     if (index > -1) {
@@ -167,6 +169,23 @@ function handleSelect(node: TreeNode) {
   }
   selectedKeys.value = keys
   emits('update:selectedKeys', keys)
+}
+
+// 实现异步加载
+function triggerLoad(node: TreeNodeType) {
+  if (!node?.children?.length && !node.isLeaf) {
+    const loadingKeys = loadingKeysRef.value
+    if (!loadingKeys.has(node.key)) {
+      loadingKeys.add(node.key)
+      if (typeof props.onLoad === 'function') {
+        props.onLoad(node).then(children => {
+          node.rawNode.children = children
+          node.children = createTree(children, node)
+          loadingKeys.delete(node.key)
+        })
+      }
+    }
+  }
 }
 
 watch(

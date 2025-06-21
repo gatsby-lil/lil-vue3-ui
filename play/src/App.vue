@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { AddCircle } from '@vicons/ionicons5'
+import { TreeOption } from '@lil-ui/components/tree'
 
 function createLabel(level: number): string {
   if (level === 4) return '道生一'
@@ -21,6 +22,21 @@ function createData(level = 4, parentKey = ''): any {
       customChildren: createData(level - 1, key) // 孩子
     }
   })
+}
+
+function asyncCreateData() {
+  return [
+    {
+      label: nextLabel(),
+      key: 1,
+      isLeaf: false // 这里isLeaf 为false 表示点击的时候动态的加载子节点
+    },
+    {
+      label: nextLabel(),
+      key: 2,
+      isLeaf: false
+    }
+  ]
 }
 
 function nextLabel(currentLabel?: string | number): string {
@@ -44,7 +60,8 @@ const handleLoad = (node: TreeOption) => {
         {
           label: nextLabel(node.label),
           key: node.key + nextLabel(node.label),
-          isLeaf: false
+          isLeaf: false,
+          children: []
         }
       ])
     }, 2000)
@@ -52,6 +69,7 @@ const handleLoad = (node: TreeOption) => {
 }
 
 const treeData = ref(createData())
+const asyncTreeData = ref(asyncCreateData())
 const selectedKeys = ref([])
 
 watch(selectedKeys, keys => {
@@ -61,15 +79,15 @@ watch(selectedKeys, keys => {
 
 <template>
   <div style="display: flex; justify-content: space-between">
+    <!-- :default-expanded-keys="['40', '4032']" -->
+    <!-- label-field="customLabel"
+      key-field="customKey"
+      children-field="customChildren" -->
     <lil-tree
-      :data="treeData"
-      :default-expanded-keys="['40', '4032']"
+      :data="asyncTreeData"
       :onLoad="handleLoad"
       v-model:selected-keys="selectedKeys"
       selectable
-      label-field="customLabel"
-      key-field="customKey"
-      children-field="customChildren"
     />
     <lil-icon :size="36" color="red">
       <AddCircle />

@@ -1,14 +1,16 @@
 import { ExtractPropTypes, PropType } from 'vue'
 
 export type TypeTreeKey = number | string
+
 export interface TreeOption {
   label?: TypeTreeKey
   key?: TypeTreeKey
-  children: TreeOption[]
+  children?: TreeOption[]
   isLeaf?: boolean
   disabled?: boolean
   [key: string]: unknown
 }
+
 export interface TreeNode extends Required<TreeOption> {
   level: number
   rawNode: TreeOption
@@ -26,7 +28,10 @@ export const treeNodePorps = {
     require: true
   },
   selected: {
-    type: Boolean,
+    type: Boolean
+  },
+  loadingKeys: {
+    type: Object as PropType<Set<TypeTreeKey>>
   }
 } as const
 
@@ -34,8 +39,6 @@ export const treeNodeEmitts = {
   toggle: (node: TreeNode) => node,
   select: (node: TreeNode) => node
 }
-
-
 
 export const treeProps = {
   data: {
