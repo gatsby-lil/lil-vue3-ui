@@ -72,8 +72,19 @@ const treeData = ref(createData())
 const asyncTreeData = ref(asyncCreateData())
 const selectedKeys = ref([])
 
+const checkValue = ref('Hello')
+
+function checkboxChange(val: boolean | string | number) {
+  console.log(val, '33333')
+}
+
 watch(selectedKeys, keys => {
   console.log(keys, 'kkkkkk')
+})
+
+watch(checkValue, value => {
+  console.log(value, 'vvvv')
+  return !!value
 })
 </script>
 
@@ -99,6 +110,19 @@ watch(selectedKeys, keys => {
     <lil-icon :size="36" color="red">
       <AddCircle />
     </lil-icon>
+    <lil-checkbox
+      v-model="checkValue"
+      label="333"
+      :indeterminate="true"
+      :disabled="false"
+      @change="checkboxChange"
+    >
+      <!-- 插槽的两种方式 -->
+      <!-- <template #default>
+        <span style="color: darkgoldenrod">lil</span>
+      </template> -->
+      <span style="color: brown">lil</span>
+    </lil-checkbox>
   </div>
 </template>
 

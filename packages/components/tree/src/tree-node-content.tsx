@@ -10,7 +10,6 @@ export default defineComponent({
   props: treeNodeContentProps,
   setup(props: TreeNodeContentProps) {
     const treeContext = inject(treeInjectionKey)
-    console.log(treeContext?.slots, 'slots')
     const node = toRef(props.node)
     return () => {
       return treeContext?.slots.default
