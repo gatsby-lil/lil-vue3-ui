@@ -13,6 +13,13 @@
           <Switcher v-else />
         </lil-icon>
       </span>
+      <lil-checkbox
+        v-if="showCheckbox"
+        :model-value="checked"
+        :disabled="disabled"
+        :indeterminate="indeterminate"
+        @change="handleCheckChange"
+      />
       <span :class="[bem.e('label')]" @click="handleContentClick">
         <TreeNodeContent :node="node!" />
       </span>
@@ -23,6 +30,7 @@
 <script lang="ts" setup>
 import { createNamespace } from '@lil-ui/utils/createClassName'
 import LilIcon from '@lil-ui/components/icon'
+import LilCheckbox from '@lil-ui/components/checkbox'
 import TreeNodeContent from './tree-node-content'
 import Switcher from './icons/Switcher'
 import Loading from './icons/Loading'
@@ -38,6 +46,10 @@ const props = defineProps(treeNodePorps)
 const isLoading = computed(() => {
   return props.loadingKeys?.has(props.node!.key)
 })
+
+function handleCheckChange(val: string | number | boolean) {
+  emits('check', props.node!, val as boolean)
+}
 function handleExpand() {
   emits('toggle', props.node!)
 }

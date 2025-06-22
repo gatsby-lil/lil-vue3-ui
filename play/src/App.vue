@@ -94,10 +94,15 @@ watch(checkValue, value => {
     <!-- label-field="customLabel"
       key-field="customKey"
       children-field="customChildren" -->
+    <!-- :onLoad="false" -->
     <lil-tree
-      :data="asyncTreeData"
-      :onLoad="handleLoad"
+      :data="treeData"
+      :showCheckbox="true"
+      label-field="customLabel"
+      key-field="customKey"
+      children-field="customChildren"
       v-model:selected-keys="selectedKeys"
+      :default-checked-keys="['40']"
       selectable
     >
       <!-- 测试插槽 -->

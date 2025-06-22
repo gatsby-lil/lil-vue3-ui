@@ -5,16 +5,20 @@
         :node="node"
         :expanded="isExpanded(node)"
         :selected="isSelected(node)"
+        :checked="isChecked(node)"
+        :show-checkbox="showCheckbox"
+        :indeterminate="isindeterminate(node)"
         :loading-keys="loadingKeysRef"
         @toggle="toggleExpand"
         @select="handleSelect"
+        @check="handleCheck"
       />
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, ref, useSlots, watch } from 'vue'
+import { computed, onMounted, provide, ref, useSlots, watch } from 'vue'
 import { createNamespace } from '@lil-ui/utils/createClassName'
 import TreeNode from './treeNode.vue'
 import {
@@ -39,6 +43,8 @@ const tree = ref<TreeNodeType[]>([])
 const expandedKeysSet = ref(new Set(props.defaultExpandedKeys))
 const selectedKeys = ref<TypeTreeKey[]>([])
 const loadingKeysRef = ref(new Set<TypeTreeKey>())
+const checkedKeysRef = ref(new Set(props.defaultCheckedKeys))
+const indeterminateRefs = ref<Set<TypeTreeKey>>(new Set())
 
 provide(treeInjectionKey, {
   slots: useSlots()
@@ -64,6 +70,10 @@ const treeFieldOptions = createOptions(
   props.childrenField
 )
 
+function findNode(key: TypeTreeKey) {
+  return flattenTree.value.find(node => node.key === key)
+}
+
 function createTree(
   data: TreeOption[],
   parentNode: TreeNodeType | null = null
@@ -81,7 +91,8 @@ function createTree(
         level: parentNode ? parentNode.level + 1 : 0,
         disabled: !!node.disabled,
         children: [],
-        isLeaf: node.isLeaf ?? children.length === 0
+        isLeaf: node.isLeaf ?? children.length === 0,
+        parentKey: parentNode ? parentNode.key : null
       }
       if (children && children.length > 0) {
         treeNode.children = traversal(children, treeNode)
@@ -193,6 +204,77 @@ function triggerLoad(node: TreeNodeType) {
   }
 }
 
+// 实现半选
+function isChecked(node: TreeNodeType) {
+  return checkedKeysRef.value.has(node.key)
+}
+
+function isindeterminate(node: TreeNodeType) {
+  return indeterminateRefs.value.has(node.key)
+}
+
+// 由父级开始递归设置子节点的选中状态
+function toggleCheck(node: TreeNodeType, checked: boolean) {
+  if (!node || node.disabled) {
+    return
+  }
+  const checkedKeys = checkedKeysRef.value
+  // 选中去掉半选状态
+  if (checked) {
+    indeterminateRefs.value.delete(node.key)
+  }
+  // 依次处理子级
+  checkedKeys[checked ? 'add' : 'delete'](node.key)
+  node.children?.forEach(child => {
+    toggleCheck(child, checked)
+  })
+}
+
+// 自下节点点击时，设置父级节点的选中状态
+function updateCheckedKeys(node: TreeNodeType) {
+  if (!node?.parentKey) {
+    return
+  }
+  const parentNode = findNode(node.parentKey!)
+  if (!parentNode) {
+    return
+  }
+  // 默认子级应该全选
+  let allChecked = true
+  // 子级没有被选中的
+  let hasChecked = false
+  const nodes = parentNode.children
+  if (!Array.isArray(nodes) || !nodes.length) {
+    return
+  }
+  for (let node of nodes) {
+    if (checkedKeysRef.value.has(node.key)) {
+      hasChecked = true
+    } else if (indeterminateRefs.value.has(node.key)) {
+      allChecked = false
+      hasChecked = true
+    } else {
+      allChecked = false
+    }
+  }
+  if (allChecked) {
+    checkedKeysRef.value.add(parentNode.key)
+    indeterminateRefs.value.delete(parentNode.key)
+  } else if (hasChecked) {
+    checkedKeysRef.value.delete(parentNode.key)
+    indeterminateRefs.value.add(parentNode.key)
+  }
+  // 递归更新
+  updateCheckedKeys(parentNode)
+}
+
+function handleCheck(node: TreeNodeType, checked: boolean) {
+  // 自上而下
+  toggleCheck(node, checked)
+  // 自下而上
+  updateCheckedKeys(node)
+}
+
 watch(
   props.data,
   (data: TreeOption[]) => {
@@ -211,4 +293,10 @@ watch(
   },
   { immediate: true }
 )
+
+onMounted(() => {
+  checkedKeysRef.value.forEach(key => {
+    toggleCheck(findNode(key)!, true)
+  })
+})
 </script>
