@@ -78,6 +78,14 @@ function checkboxChange(val: boolean | string | number) {
   console.log(val, '33333')
 }
 
+function buttonClick(e: MouseEvent) {
+  console.log(e, 'buttonClick')
+}
+
+function buttonMousedown(e: MouseEvent) {
+  console.log(e, 'buttonMousedown')
+}
+
 watch(selectedKeys, keys => {
   console.log(keys, 'kkkkkk')
 })
@@ -128,6 +136,21 @@ watch(checkValue, value => {
       </template> -->
       <span style="color: brown">lil</span>
     </lil-checkbox>
+  </div>
+  <div>
+    <lil-button
+      type="primary"
+      size="small"
+      :disabled="false"
+      @click="buttonClick"
+      @mousedown="buttonMousedown"
+    >
+      <!-- <lil-icon>
+        <AddCircle />
+      </lil-icon>
+      <span style="color: darkgoldenrod">lil</span> -->
+      lil
+    </lil-button>
   </div>
 </template>
 

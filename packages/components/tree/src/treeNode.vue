@@ -28,14 +28,14 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
 import { createNamespace } from '@lil-ui/utils/createClassName'
 import LilIcon from '@lil-ui/components/icon'
 import LilCheckbox from '@lil-ui/components/checkbox'
+import Switcher from '@lil-ui/components/internal-icon/Switcher'
+import Loading from '@lil-ui/components/internal-icon/Loading'
 import TreeNodeContent from './tree-node-content'
-import Switcher from './icons/Switcher'
-import Loading from './icons/Loading'
 import { treeNodeEmitts, treeNodePorps } from './tree'
-import { computed } from 'vue'
 
 const bem = createNamespace('tree-node')
 
