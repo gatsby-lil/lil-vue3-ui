@@ -46,6 +46,7 @@
   "dependencies": {
     "@lil-ui/components": "workspace:*",
     "@lil-ui/theme": "workspace:*",
-    "@lil-ui/utils": "workspace:*"
+    "@lil-ui/utils": "workspace:*",
+    "async-validator": "^4.2.5"
   }
 }
