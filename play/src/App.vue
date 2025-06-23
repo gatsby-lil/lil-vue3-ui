@@ -74,6 +74,8 @@ const selectedKeys = ref([])
 
 const checkValue = ref('Hello')
 
+const inputValue = ref('Hello-input')
+
 function checkboxChange(val: boolean | string | number) {
   console.log(val, '33333')
 }
@@ -93,6 +95,10 @@ watch(selectedKeys, keys => {
 watch(checkValue, value => {
   console.log(value, 'vvvv')
   return !!value
+})
+
+watch(inputValue, value => {
+  console.log(value, 'inputValue')
 })
 </script>
 
@@ -151,6 +157,30 @@ watch(checkValue, value => {
       <span style="color: darkgoldenrod">lil</span> -->
       lil
     </lil-button>
+    <div style="margin-top: 10px">
+      <lil-input v-model="inputValue" clearable showPassword>
+        <template #prepend>
+          <lil-icon>
+            <AddCircle />
+          </lil-icon>
+        </template>
+        <template #append>
+          <lil-icon>
+            <AddCircle />
+          </lil-icon>
+        </template>
+        <template #prefixIcon>
+          <lil-icon>
+            <AddCircle />
+          </lil-icon>
+        </template>
+        <template #suffixIcon>
+          <lil-icon>
+            <AddCircle />
+          </lil-icon>
+        </template>
+      </lil-input>
+    </div>
   </div>
 </template>
 
