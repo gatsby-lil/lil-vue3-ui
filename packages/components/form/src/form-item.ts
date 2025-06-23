@@ -22,7 +22,7 @@ export const formItemProps = {
   }
 } as const
 
-export type FormItemProps = Partial<ExtractPropTypes<typeof formItemProps>>
+export type FormItemProps = ExtractPropTypes<typeof formItemProps>
 
 export interface FormItemContext extends FormItemProps {
   validate: (

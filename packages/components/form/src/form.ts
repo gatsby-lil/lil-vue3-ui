@@ -1,7 +1,7 @@
 import { ExtractPropTypes, InjectionKey, PropType } from "vue"
 import { Arrayable, FormItemContext, FormItemRule } from "./form-item"
 
-const formProps = {
+export const formProps = {
   model: {
     type: Object,
     default: () => ({})
@@ -15,7 +15,7 @@ const formProps = {
   },
 }
 
-export type FormProps = Partial<ExtractPropTypes<typeof formProps>>
+export type FormProps = ExtractPropTypes<typeof formProps>
 
 export interface FormContext extends FormProps { 
   addField(field: FormItemContext): void;

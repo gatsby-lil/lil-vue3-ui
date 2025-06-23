@@ -48,6 +48,7 @@
 <script lang="ts" setup>
 import {
   computed,
+  inject,
   nextTick,
   onMounted,
   ref,
@@ -58,12 +59,14 @@ import {
 import { createNamespace } from '@lil-ui/utils/createClassName'
 import LilIcon from '@lil-ui/components/icon'
 import { inputEmits, inputProps } from './input'
+import { FormItemContextKey } from '@lil-ui/components/form'
 
 const bem = createNamespace('input')
 defineOptions({
   name: 'lil-input',
   inheritAttrs: false // 关闭默认继承
 })
+const formItemContext = inject(FormItemContextKey)
 const props = defineProps(inputProps)
 const emits = defineEmits(inputEmits)
 const attrs = useAttrs()
@@ -119,6 +122,7 @@ function handleFocus(e: FocusEvent) {
   emits('focus', e)
 }
 function handleBlur(e: FocusEvent) {
+  formItemContext?.validate('blur')
   emits('blur', e)
 }
 watch(
@@ -128,6 +132,7 @@ watch(
   }
 )
 onMounted(() => {
+  formItemContext?.validate('change')
   setNativeInputValue()
 })
 </script>

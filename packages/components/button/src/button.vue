@@ -33,7 +33,7 @@
   </button>
 </template>
 <script lang="ts" setup>
-import { useSlots } from 'vue'
+import { onMounted, useAttrs, useSlots } from 'vue'
 import { createNamespace } from '@lil-ui/utils/createClassName'
 import LoadingComponent from '@lil-ui/components/internal-icon/Loading'
 import LilIcon from '@lil-ui/components/icon'
@@ -47,10 +47,15 @@ defineOptions({
 const props = defineProps(buttonProps)
 const emits = defineEmits(buttonEmits)
 const slots = useSlots()
+const attrs = useAttrs()
 function emitClick(e: MouseEvent) {
   emits('click', e)
 }
 function emitMousedown(e: MouseEvent) {
   emits('mousedown', e)
 }
+
+onMounted(() => {
+  console.log(attrs, 'attrs')
+})
 </script>

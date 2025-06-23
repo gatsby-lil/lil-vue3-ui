@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, reactive } from 'vue'
 import { AddCircle } from '@vicons/ionicons5'
 import { TreeOption } from '@lil-ui/components/tree'
 
@@ -76,6 +76,10 @@ const checkValue = ref('Hello')
 
 const inputValue = ref('Hello-input')
 
+const formRef = ref()
+
+const state = reactive({ username: '', password: '' })
+
 function checkboxChange(val: boolean | string | number) {
   console.log(val, '33333')
 }
@@ -86,6 +90,12 @@ function buttonClick(e: MouseEvent) {
 
 function buttonMousedown(e: MouseEvent) {
   console.log(e, 'buttonMousedown')
+}
+
+function validateForm() {
+  formRef.value?.validate?.((valid: boolean, errors: any) => {
+    console.log(valid, errors, 'form-form-form')
+  })
 }
 
 watch(selectedKeys, keys => {
@@ -180,6 +190,52 @@ watch(inputValue, value => {
           </lil-icon>
         </template>
       </lil-input>
+    </div>
+    <div style="margin-top: 10px">
+      <lil-form
+        ref="formRef"
+        :model="state"
+        :rules="{
+          username: {
+            min: 6,
+            max: 10,
+            message: '用户名6-10位',
+            trigger: ['change', 'blur']
+          }
+        }"
+      >
+        <lil-form-item
+          prop="username"
+          :rules="[
+            { required: true, message: '请输入用户名', trigger: 'blur' }
+          ]"
+        >
+          <lil-input placeholder="请输入用户名" v-model="state.username" />
+          <template #label> 用户名 </template>
+        </lil-form-item>
+
+        <lil-form-item
+          prop="password"
+          :rules="[{ required: true, message: '请输入密码', trigger: 'blur' }]"
+        >
+          <lil-input
+            placeholder="请输入密码"
+            v-model="state.password"
+            type="password"
+          />
+          <template #label> 用户名 </template>
+        </lil-form-item>
+        <lil-button
+          a="1"
+          b="2"
+          size="medium"
+          type="primary"
+          :round="true"
+          @click="validateForm"
+        >
+          按钮
+        </lil-button>
+      </lil-form>
     </div>
   </div>
 </template>
