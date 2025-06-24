@@ -1,6 +1,22 @@
 <template>
   <div :class="bem.b()">
-    <template v-for="node in flattenTree">
+    <lil-virtual-list :items="flattenTree" :remain="8" :size="35">
+      <template #default="{ node }">
+        <tree-node
+          :node="node"
+          :expanded="isExpanded(node)"
+          :selected="isSelected(node)"
+          :checked="isChecked(node)"
+          :show-checkbox="showCheckbox"
+          :indeterminate="isindeterminate(node)"
+          :loading-keys="loadingKeysRef"
+          @toggle="toggleExpand"
+          @select="handleSelect"
+          @check="handleCheck"
+        />
+      </template>
+    </lil-virtual-list>
+    <!-- <template v-for="node in flattenTree">
       <tree-node
         :node="node"
         :expanded="isExpanded(node)"
@@ -13,13 +29,14 @@
         @select="handleSelect"
         @check="handleCheck"
       />
-    </template>
+    </template> -->
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, provide, ref, useSlots, watch } from 'vue'
 import { createNamespace } from '@lil-ui/utils/createClassName'
+import LilVirtualList from '@lil-ui/components/virtual-list'
 import TreeNode from './treeNode.vue'
 import {
   TreeNode as TreeNodeType,

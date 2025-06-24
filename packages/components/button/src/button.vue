@@ -54,8 +54,4 @@ function emitClick(e: MouseEvent) {
 function emitMousedown(e: MouseEvent) {
   emits('mousedown', e)
 }
-
-onMounted(() => {
-  console.log(attrs, 'attrs')
-})
 </script>
