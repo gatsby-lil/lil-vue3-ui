@@ -47,6 +47,7 @@
     "@lil-ui/components": "workspace:*",
     "@lil-ui/theme": "workspace:*",
     "@lil-ui/utils": "workspace:*",
-    "async-validator": "^4.2.5"
+    "async-validator": "^4.2.5",
+    "uuid": "^11.1.0"
   }
 }
