@@ -1,5 +1,5 @@
 <template>
-  <div :class="bem.b()">
+  <div :class="bem.b()" @click="handleClick">
     <template v-if="drag">
       <lil-upload-dragger @file="handleUploadFiles">
         <slot></slot>
@@ -70,5 +70,10 @@ function handleUploadFiles(files: FileList) {
 function handleChange(e: Event) {
   const files = (e.target as HTMLInputElement).files!
   handleUploadFiles(files)
+}
+
+const handleClick = () => {
+  inputRef.value!.value = ''
+  inputRef.value!.click()
 }
 </script>
