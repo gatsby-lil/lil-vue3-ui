@@ -48,6 +48,9 @@
     "@lil-ui/theme": "workspace:*",
     "@lil-ui/utils": "workspace:*",
     "async-validator": "^4.2.5",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "multer": "^2.0.1",
     "uuid": "^11.1.0"
   }
 }
