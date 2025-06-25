@@ -54,13 +54,18 @@ export default defineComponent({
       const scrollTop = wrapperRef.value!.scrollTop
       state.start = Math.floor(scrollTop / props.size)
       state.end = state.start + props.remain
-      console.log(state.start, state.end, prev.value, '33333')
-      offset.value = state.start * props.size - props.size * prev.value
+      const os = state.start * props.size - props.size * prev.value
+      console.log(os, 'os');
+      offset.value = os
     }
 
     function initWrapper() { 
-      wrapperRef.value!.style.height = props.remain * props.size + 'px'
-      barRef.value!.style.height = props.items.length * props.size + 'px'
+      if(wrapperRef.value) {
+        wrapperRef.value.style.height = props.remain * props.size + 'px'
+      }
+      if(barRef.value) {
+        barRef.value.style.height = props.items.length * props.size + 'px'
+      }
     }
 
     watch(() => props.items, () =>{
