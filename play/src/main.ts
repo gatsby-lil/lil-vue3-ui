@@ -6,6 +6,7 @@ import LilButton from '@lil-ui/components/button'
 import LilInput from '@lil-ui/components/input'
 import LilUpload from '@lil-ui/components/upload'
 import LilVirtualList from '@lil-ui/components/virtual-list'
+import LilCalendar from '@lil-ui/components/calendar'
 import { LilForm, LilFormItem } from '@lil-ui/components/form'
 import '@lil-ui/theme/src/index.scss'
 import App from './App.vue'
@@ -20,7 +21,8 @@ const components = [
   LilForm,
   LilFormItem,
   LilUpload,
-  LilVirtualList
+  LilVirtualList,
+  LilCalendar
 ]
 components.forEach(comp => {
   app.use(comp)
