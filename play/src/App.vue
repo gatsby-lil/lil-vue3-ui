@@ -77,6 +77,7 @@ const checkValue = ref('Hello')
 const inputValue = ref('Hello-input')
 
 const formRef = ref()
+const currentDate = ref(new Date())
 
 const state = reactive({ username: '', password: '' })
 
@@ -109,6 +110,10 @@ watch(checkValue, value => {
 
 watch(inputValue, value => {
   console.log(value, 'inputValue')
+})
+
+watch(currentDate, () => {
+  console.log(currentDate, 'currentDate')
 })
 </script>
 
@@ -237,7 +242,14 @@ watch(inputValue, value => {
         </lil-button>
       </lil-form>
     </div>
-    <lil-calendar></lil-calendar>
+    <lil-calendar v-model="currentDate">
+      <template #date-cell="{ data }">
+        <p :class="data.isSelected ? 'is-selected' : ''">
+          {{ data.day.split('-').slice(1).join('-') }}
+          {{ data.isSelected ? '✔️' : '' }}
+        </p>
+      </template>
+    </lil-calendar>
   </div>
 </template>
 

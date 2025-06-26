@@ -34,7 +34,7 @@
       color: #fff;
       background: $color-danger;
     }
-    @include when(warning) {
+    @include when(today) {
       color: #fff;
       background: $color-warning;
     }
