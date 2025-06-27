@@ -94,7 +94,6 @@ const currentDate = computed(() => {
 // 展示7*6
 const weeks = computed(() => {
   const dayList: CalendarDateCell[] = []
-  debugger
   // 获取本月的第一天是星期几
   const firstDay = date.value.startOf('month').day()
   // 前一个月的最后一天
