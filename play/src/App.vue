@@ -5,11 +5,11 @@
     :data-sources="items"
     :keeps="30"
     :estimate-size="80"
-    :data-component="Item"
+    :data-component="(Item as DefineComponent<{},{},any>)"
   ></lil-virtual-scroll-list>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { DefineComponent, ref } from 'vue'
 import { Random } from 'mockjs'
 import Item from './Item.vue'
 interface DataType {
