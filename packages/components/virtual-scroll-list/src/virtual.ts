@@ -44,11 +44,46 @@ export function initVirtual(param: VirtualOptions, update: updateType) {
     updateRange(start, end)
   }
 
+  // 根据滚动后的元素计算偏移量
+  function getIndexOffset(idx: number) {
+    if (!idx) return 0
+    let offset = 0
+    for (let i = 0; i < idx; i++) {
+      let indexSize = sizeMap.get(param.uniqueIds[i])
+      offset += typeof indexSize === 'number' ? indexSize : getEstimateSize()
+    }
+    return offset
+  }
   function getScrollOvers() {
-    return Math.floor(recordOffsetValue / getEstimateSize())
+    if (isFixed()) {
+      return Math.floor(recordOffsetValue / getEstimateSize())
+    } else {
+      // 在整个列表里查找最接近滚动的那一项，计算每一项的偏移量看与哪一项最接近
+      let low = 0
+      let high = param.uniqueIds.length
+      let middle = 0
+      let middleOffset = 0
+      while (low <= high) {
+        middle = Math.floor((low + high) / 2)
+        middleOffset = getIndexOffset(middle)
+        if (middleOffset === recordOffsetValue) {
+          return middle
+        } else if (middleOffset < recordOffsetValue) {
+          low = middle + 1
+        } else if (middleOffset > recordOffsetValue) {
+          high = middle - 1
+        }
+      }
+      return low > 0 ? --low : 0
+    }
   }
   function getPadFront() {
-    return getEstimateSize() * range.start
+    if (isFixed()) {
+      return getEstimateSize() * range.start
+    } else {
+      // 讲滚动后的高度相加, 计算上padding
+      return getIndexOffset(range.start)
+    }
   }
   function getPadBehind() {
     const lastIndex = param.uniqueIds.length - 1
@@ -98,6 +133,13 @@ export function initVirtual(param: VirtualOptions, update: updateType) {
     } else if (caclType === CALC_TYPE.FIXED && fixedSizeVal !== size) {
       caclType = CALC_TYPE.DYNAMIC
       fixedSizeVal = 0 // 默认采用estimateSize
+    }
+    if (caclType === CALC_TYPE.DYNAMIC) {
+      if (sizeMap.size < Math.min(param.uniqueIds.length, param.keeps)) {
+        firstRangeAvg = Math.round(
+          sizeMap.values().reduce((a, b) => a + b, 0) / sizeMap.size
+        )
+      }
     }
   }
   // 从0 -> 最后一项
