@@ -19,7 +19,7 @@ interface DataType {
   index: number
 }
 const data: Array<DataType> = []
-const totalCount = 10000
+const totalCount = 100
 let index = 0
 while (index < totalCount) {
   data.push({
